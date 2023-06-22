@@ -1,5 +1,7 @@
+"use client"
 import React from 'react';
 import Link from "next/link";
+import styles from "./navbar.module.css"
 
 const links = [
     {
@@ -35,12 +37,13 @@ const links = [
 ];
 const Navbar = () => {
     return (
-        <div>
-            <Link href="/">Next App</Link>
-            <div>
+        <div className={styles.container}>
+            <Link href="/" className={styles.logo}>Next App</Link>
+            <div className={styles.links}>
                 {links.map(link => (
-                    <Link href={link.url} key={link.id}>{link.title}</Link>
+                    <Link href={link.url} key={link.id} className={styles.link}>{link.title}</Link>
                 ))}
+                <button onClick={() => {}} className={styles.logout}>Logout</button>
             </div>
         </div>
     );
