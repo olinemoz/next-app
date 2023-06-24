@@ -10,11 +10,19 @@ interface Blog {
 }
 
 const getData = async (postId : string | number) => {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {cache: 'no-store'});
+    const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {cache: 'no-store'});
     if (!response?.ok) {
         return notFound();
     }
     return response.json();
+}
+
+export async function generateMetadata({ params: {id} } : Blog) {
+    const data = await getData(id);
+    return {
+        title: `Oline ${data?.title}`,
+        description: data?.desc
+    }
 }
 const BlogPost: React.FC<Blog> = async ({params: {id}}) => {
     const data = await getData(id);
@@ -26,7 +34,7 @@ const BlogPost: React.FC<Blog> = async ({params: {id}}) => {
                         {data?.title}
                     </h1>
                     <p className={styles.desc}>
-                        {data?.body}
+                        {data?.desc}
                     </p>
                     <div className={styles.author}>
                         <Image
@@ -36,12 +44,12 @@ const BlogPost: React.FC<Blog> = async ({params: {id}}) => {
                             height={40}
                             className={styles.avatar}
                         />
-                        <span className={styles.username}>author</span>
+                        <span className={styles.username}>{data?.username}</span>
                     </div>
                 </div>
                 <div className={styles.imageContainer}>
                     <Image
-                        src={"https://images.pexels.com/photos/2916450/pexels-photo-2916450.jpeg"}
+                        src={data?.img}
                         alt=""
                         fill={true}
                         className={styles.image}
@@ -50,8 +58,7 @@ const BlogPost: React.FC<Blog> = async ({params: {id}}) => {
             </div>
             <div className={styles.content}>
                 <p className={styles.text}>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad adipisci aliquam aut delectus dolorum
-                    eum in minima quisquam reiciendis tenetur!
+                    {data?.content}
                 </p>
             </div>
         </div>
