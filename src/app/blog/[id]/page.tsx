@@ -1,16 +1,32 @@
 import React from 'react';
 import styles from "./page.module.css"
 import Image from "next/image";
+import {notFound} from "next/navigation";
 
-const BlogPost = () => {
+interface Blog {
+    params: {
+        id: string | number
+    }
+}
+
+const getData = async (postId : string | number) => {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {cache: 'no-store'});
+    if (!response?.ok) {
+        return notFound();
+    }
+    return response.json();
+}
+const BlogPost: React.FC<Blog> = async ({params: {id}}) => {
+    const data = await getData(id);
     return (
         <div className={styles.container}>
             <div className={styles.top}>
                 <div className={styles.info}>
-                    <h1 className={styles.title}>Minimal Single Product</h1>
+                    <h1 className={styles.title}>
+                        {data?.title}
+                    </h1>
                     <p className={styles.desc}>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus aperiam autem consequuntur
-                        distinctio dolorum fugit natus quasi quibusdam tempora ullam!
+                        {data?.body}
                     </p>
                     <div className={styles.author}>
                         <Image
